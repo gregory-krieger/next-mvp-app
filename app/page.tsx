@@ -1,28 +1,18 @@
-import { Button } from "@/components/ui/button";
-import supabaseClient from "@/lib/supabase/supabase";
+import SignOutBtn from "@/components/auth/components/sign-out-btn";
+import { auth } from "@/lib/auth/auth";
+import { headers } from "next/headers";
 
 const Home = async () => {
-  const supabase = await supabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const data = await auth.api.getSession({
+    headers: await headers(), //some endpoint might require headers
+  });
 
-  if (user) {
-    return (
-      <div>
-        <h1>Welcome {user.email}</h1>
-        <form action="/auth/signout" method="post">
-          <Button className="button block cursor-pointer" type="submit">
-            Sign out
-          </Button>
-        </form>
-      </div>
-    );
-  }
+  console.log(data);
 
   return (
     <div>
-      <h1>Welcome</h1>
+      <h1>Welcome {data?.user.name}</h1>
+      <SignOutBtn />
     </div>
   );
 };

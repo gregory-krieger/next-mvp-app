@@ -16,10 +16,15 @@ import Image from "next/image";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
-import { actionSignup } from "@/lib/supabase/actions/action-signup";
+import { authClient } from "@/lib/auth/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function SignUp() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   return (
     <Card className="z-50 border-none shadow-none max-w-md w-full">
@@ -96,29 +101,27 @@ export default function SignUp() {
               or
             </span>
           </div>
-          <form
-            className="flex flex-col gap-4"
-            action={async (formData) => {
-              setLoading(true);
-              const { data, error, errors } = await actionSignup(formData);
-              if (error) {
-                toast.error(error);
-              }
-              if (errors) {
-                toast.error(errors.email?.[0] || errors.password?.[0]);
-              }
-              if (data) {
-                toast.success("User created successfully");
-              }
-              setLoading(false);
-            }}
-          >
+          <div className="flex flex-col gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                type="text"
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="John Doe"
+                required
+              />
+            </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
                 name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="m@example.com"
                 required
               />
@@ -129,6 +132,8 @@ export default function SignUp() {
                 id="password"
                 type="password"
                 name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
                 required
               />
@@ -136,16 +141,38 @@ export default function SignUp() {
 
             <Button
               type="submit"
-              className="w-full cursor-pointer"
+              className="w-full"
               disabled={loading}
+              onClick={async () => {
+                await authClient.signUp.email({
+                  email,
+                  password,
+                  name: `${name}`,
+                  callbackURL: "/",
+                  fetchOptions: {
+                    onResponse: () => {
+                      setLoading(false);
+                    },
+                    onRequest: () => {
+                      setLoading(true);
+                    },
+                    onError: (ctx) => {
+                      toast.error(ctx.error.message);
+                    },
+                    onSuccess: async () => {
+                      router.push("/");
+                    },
+                  },
+                });
+              }}
             >
               {loading ? (
                 <Loader2 size={16} className="animate-spin" />
               ) : (
-                "Get started"
+                "Create an account"
               )}
             </Button>
-          </form>
+          </div>
         </div>
       </CardContent>
       <CardFooter>

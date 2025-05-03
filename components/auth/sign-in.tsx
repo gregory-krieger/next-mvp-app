@@ -14,14 +14,14 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import Link from "next/link";
-import { actionSignin } from "@/lib/supabase/actions/action-signin";
-
+import { authClient } from "@/lib/auth/auth-client";
+import { useRouter } from "next/navigation";
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   return (
     <Card className="z-50 border-none shadow-none max-w-md w-full">
@@ -98,21 +98,7 @@ export default function SignIn() {
               or
             </span>
           </div>
-          <form
-            className="flex flex-col gap-4"
-            action={async (formData) => {
-              setLoading(true);
-              const { error, errors } = await actionSignin(formData);
-              if (error) {
-                toast.error(error);
-              }
-              if (errors) {
-                toast.error(errors.email?.[0] || errors.password?.[0]);
-              }
-
-              setLoading(false);
-            }}
-          >
+          <form className="flex flex-col gap-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -141,16 +127,34 @@ export default function SignIn() {
                 value={password}
               />
             </div>
-
             <Button
               type="submit"
-              className="w-full cursor-pointer"
+              className="w-full"
               disabled={loading}
+              onClick={async () => {
+                await authClient.signIn.email(
+                  {
+                    email,
+                    password,
+                  },
+                  {
+                    onRequest: () => {
+                      setLoading(true);
+                    },
+                    onResponse: () => {
+                      setLoading(false);
+                    },
+                    onSuccess: async () => {
+                      router.push("/");
+                    },
+                  }
+                );
+              }}
             >
               {loading ? (
                 <Loader2 size={16} className="animate-spin" />
               ) : (
-                "Get started"
+                <p> Login </p>
               )}
             </Button>
           </form>

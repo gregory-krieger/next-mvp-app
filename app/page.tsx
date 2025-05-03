@@ -1,4 +1,4 @@
-import SignOutBtn from "@/components/auth/components/sign-out-btn";
+import SignOutBtn from "@/lib/auth/components/sign-out-btn";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 

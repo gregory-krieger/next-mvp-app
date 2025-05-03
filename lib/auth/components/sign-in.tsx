@@ -14,13 +14,10 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import Link from "next/link";
 import { authClient } from "@/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
-
-export default function SignUp() {
-  const [name, setName] = useState("");
+export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -37,10 +34,10 @@ export default function SignUp() {
       />
       <CardHeader className="text-center flex flex-col items-center">
         <CardTitle className="text-lg md:text-xl font-bold">
-          Create your account
+          Sign in to Katarina
         </CardTitle>
         <CardDescription className="text-xs md:text-sm">
-          Welcome! Please fill in the details to get started.
+          Welcome back! Please sign in to continue
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -54,21 +51,22 @@ export default function SignUp() {
             className="w-full gap-2 cursor-pointer"
             disabled={loading}
             onClick={async () => {
-              /*
-              await signIn.social(
+              await authClient.signIn.social(
                 {
                   provider: "google",
-                  callbackURL: "/dashboard",
                 },
                 {
-                  onRequest: (ctx) => {
+                  onRequest: () => {
                     setLoading(true);
                   },
-                  onResponse: (ctx) => {
+                  onResponse: () => {
                     setLoading(false);
                   },
+                  onSuccess: async () => {
+                    router.push("/");
+                  },
                 }
-              );*/
+              );
             }}
           >
             <svg
@@ -101,29 +99,19 @@ export default function SignUp() {
               or
             </span>
           </div>
-          <div className="flex flex-col gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                type="text"
-                name="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="John Doe"
-                required
-              />
-            </div>
+          <form className="flex flex-col gap-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
                 name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 placeholder="m@example.com"
                 required
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+                value={email}
               />
             </div>
             <div className="grid gap-2">
@@ -132,54 +120,52 @@ export default function SignUp() {
                 id="password"
                 type="password"
                 name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
                 required
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+                value={password}
               />
             </div>
-
             <Button
               type="submit"
               className="w-full"
               disabled={loading}
               onClick={async () => {
-                await authClient.signUp.email({
-                  email,
-                  password,
-                  name: `${name}`,
-                  callbackURL: "/",
-                  fetchOptions: {
-                    onResponse: () => {
-                      setLoading(false);
-                    },
+                await authClient.signIn.email(
+                  {
+                    email,
+                    password,
+                  },
+                  {
                     onRequest: () => {
                       setLoading(true);
                     },
-                    onError: (ctx) => {
-                      toast.error(ctx.error.message);
+                    onResponse: () => {
+                      setLoading(false);
                     },
                     onSuccess: async () => {
                       router.push("/");
                     },
-                  },
-                });
+                  }
+                );
               }}
             >
               {loading ? (
                 <Loader2 size={16} className="animate-spin" />
               ) : (
-                "Create an account"
+                <p> Login </p>
               )}
             </Button>
-          </div>
+          </form>
         </div>
       </CardContent>
       <CardFooter>
         <div className="text-center text-sm w-full">
-          Already have an account?{" "}
-          <Link href="/sign-in" className="underline underline-offset-4">
-            Sign in
+          Don&apos;t have an account?{" "}
+          <Link href="/sign-up" className="underline underline-offset-4">
+            Sign up
           </Link>
         </div>
       </CardFooter>

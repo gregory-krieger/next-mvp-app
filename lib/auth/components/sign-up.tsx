@@ -66,7 +66,8 @@ export default function SignUp() {
                     setLoading(false);
                   },
                   onSuccess: async () => {
-                    router.push("/");
+                    //router.push("/");
+                    toast.success("Please verify your email address");
                   },
                 }
               );

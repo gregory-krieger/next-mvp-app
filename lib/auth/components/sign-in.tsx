@@ -148,6 +148,14 @@ export default function SignIn() {
                     onSuccess: async () => {
                       router.push("/");
                     },
+                    onError: (ctx) => {
+                      // Handle the error
+                      if (ctx.error.status === 403) {
+                        alert("Please verify your email address");
+                      }
+                      //you can also show the original error message
+                      alert(ctx.error.message);
+                    },
                   }
                 );
               }}

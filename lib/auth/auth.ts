@@ -2,6 +2,8 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db/db";
 import { nextCookies } from "better-auth/next-js";
+import resend from "../resend/resend";
+import VerifyEmailAddress from "@/lib/react-email/emails/verify-email-address";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -9,6 +11,19 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      const { error } = await resend.emails.send({
+        from: "BIGmed <onboarding@updates.bigmed.ch>",
+        to: [user.email],
+        subject: "Verify your email address",
+        react: VerifyEmailAddress({ url, username: user.name }),
+      });
+
+      if (error) throw new Error(error.message);
+    },
   },
   socialProviders: {
     google: {

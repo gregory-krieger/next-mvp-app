@@ -1,0 +1,3 @@
+packages:
+  - "." # your root package
+  - "lib/react-email" # the nested package

@@ -83,7 +83,7 @@ export function OrganizationSwitcher(props: props) {
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Teams
+              Organizations
             </DropdownMenuLabel>
             {organizations.map((org, index) => (
               <DropdownMenuItem
@@ -91,16 +91,16 @@ export function OrganizationSwitcher(props: props) {
                 onClick={() => router.push(`/${org.slug}`)}
                 className="gap-2 p-2"
               >
-                <div className="flex size-6 items-center justify-center rounded-md border">
+                <div className="size-6 shrink-0">
                   {org.logo ? (
                     <Image
                       src={org.logo}
                       alt={org.name}
-                      width={32}
-                      height={32}
+                      width={24}
+                      height={24}
                     />
                   ) : (
-                    <div className="size-8 bg-foreground/10" />
+                    <div className="flex size-6 items-center justify-center rounded-md border bg-foreground/10" />
                   )}
                 </div>
                 {org.name}

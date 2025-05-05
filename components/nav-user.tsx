@@ -20,17 +20,19 @@ import {
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
-import { User } from "better-auth";
+import { Skeleton } from "./ui/skeleton";
 
-type NavUserProps = {
-  user: User;
-};
-
-export function NavUser(props: NavUserProps) {
-  const { user } = props;
-
+export function NavUser() {
   const { isMobile } = useSidebar();
   const router = useRouter();
+
+  const { data: session, isPending } = authClient.useSession();
+
+  if (isPending) return <Skeleton className="w-full h-10" />;
+
+  if (!session || !session.user) return null;
+
+  const user = session.user;
 
   return (
     <SidebarMenu>

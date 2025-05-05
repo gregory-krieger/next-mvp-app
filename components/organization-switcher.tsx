@@ -1,7 +1,6 @@
 "use client";
 
 import { ChevronsUpDown, Plus } from "lucide-react";
-import { Organization } from "better-auth/plugins";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,30 +16,36 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth/auth-client";
+import { Skeleton } from "./ui/skeleton";
+import { useEffect } from "react";
 type props = {
-  orgs: Organization[];
   currentOrgSlug: string;
 };
 
 export function OrganizationSwitcher(props: props) {
-  const { orgs, currentOrgSlug } = props;
+  const { currentOrgSlug } = props;
+
+  useEffect(() => {
+    authClient.organization.setActive({
+      organizationSlug: currentOrgSlug,
+    });
+  }, [currentOrgSlug]);
+
   const router = useRouter();
-
   const { isMobile } = useSidebar();
-  const [activeTeam, setActiveTeam] = useState(
-    orgs.find((org) => org.slug === currentOrgSlug) || null
-  );
 
-  const switchOrg = (org: Organization) => {
-    setActiveTeam(org);
-    router.push(`/${org.slug}`);
-  };
+  const { data: organizations, isPending } = authClient.useListOrganizations();
 
-  if (!activeTeam) {
-    return null;
+  if (isPending) return <Skeleton className="w-full h-10" />;
+
+  const activeOrg = organizations?.find((org) => org.slug === currentOrgSlug);
+
+  if (!activeOrg || !organizations) {
+    console.log("no active org or no organizations");
+    return <Skeleton className="w-full h-10" />;
   }
 
   return (
@@ -53,10 +58,10 @@ export function OrganizationSwitcher(props: props) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                {activeTeam.logo ? (
+                {activeOrg.logo ? (
                   <Image
-                    src={activeTeam.logo}
-                    alt={activeTeam.name}
+                    src={activeOrg.logo}
+                    alt={activeOrg.name}
                     width={32}
                     height={32}
                   />
@@ -65,7 +70,7 @@ export function OrganizationSwitcher(props: props) {
                 )}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{activeTeam.name}</span>
+                <span className="truncate font-medium">{activeOrg.name}</span>
                 <span className="truncate text-xs">Pro plan</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -80,17 +85,17 @@ export function OrganizationSwitcher(props: props) {
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Teams
             </DropdownMenuLabel>
-            {orgs.map((org, index) => (
+            {organizations.map((org, index) => (
               <DropdownMenuItem
                 key={org.name}
-                onClick={() => switchOrg(org)}
+                onClick={() => router.push(`/${org.slug}`)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-md border">
-                  {activeTeam.logo ? (
+                  {org.logo ? (
                     <Image
-                      src={activeTeam.logo}
-                      alt={activeTeam.name}
+                      src={org.logo}
+                      alt={org.name}
                       width={32}
                       height={32}
                     />

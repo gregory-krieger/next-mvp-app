@@ -2,11 +2,10 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db/db";
 import { nextCookies } from "better-auth/next-js";
-import { customSession, Organization, organization } from "better-auth/plugins";
+import { organization } from "better-auth/plugins";
 
 import resend from "../resend/resend";
 import VerifyEmailAddress from "@/lib/react-email/emails/verify-email-address";
-import { headers } from "next/headers";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -37,20 +36,6 @@ export const auth = betterAuth({
   },
   plugins: [
     organization(),
-    // custom session plugin to add organizations to the session
-    customSession(async ({ user, session }) => {
-      const organizations = (await auth.api.listOrganizations({
-        headers: await headers(),
-      })) as Organization[];
-
-      return {
-        organizations,
-        user: {
-          ...user,
-        },
-        session,
-      };
-    }),
     nextCookies(), // make sure this is the last plugin in the array
   ],
 });

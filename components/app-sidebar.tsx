@@ -22,8 +22,6 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Skeleton } from "./ui/skeleton";
-import { authClient } from "@/lib/auth/auth-client";
 
 // This is sample data.
 const data = {
@@ -141,49 +139,21 @@ type props = {
 const AppSidebar = (props: props) => {
   const { sideBarProps, currentOrgSlug } = props;
 
-  const {
-    data: session,
-    isPending, //loading state
-    error, //error object
-  } = authClient.useSession();
-
-  if (isPending) {
-    return (
-      <Sidebar collapsible="icon" {...sideBarProps}>
-        <SidebarHeader>
-          <Skeleton className="h-10 w-full" />
-        </SidebarHeader>
-      </Sidebar>
-    );
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  if (session && session.user) {
-    console.log(session);
-    return (
-      <Sidebar collapsible="icon" {...sideBarProps}>
-        <SidebarHeader>
-          <OrganizationSwitcher
-            orgs={session.organizations}
-            currentOrgSlug={currentOrgSlug}
-          />
-        </SidebarHeader>
-        <SidebarContent>
-          <NavMain items={data.navMain} />
-          <NavProjects projects={data.projects} />
-        </SidebarContent>
-        <SidebarFooter>
-          <NavUser user={session.user} />
-        </SidebarFooter>
-        <SidebarRail />
-      </Sidebar>
-    );
-  }
-
-  return null;
+  return (
+    <Sidebar collapsible="icon" {...sideBarProps}>
+      <SidebarHeader>
+        <OrganizationSwitcher currentOrgSlug={currentOrgSlug} />
+      </SidebarHeader>
+      <SidebarContent>
+        <NavMain items={data.navMain} />
+        <NavProjects projects={data.projects} />
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser />
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+  );
 };
 
 export default AppSidebar;

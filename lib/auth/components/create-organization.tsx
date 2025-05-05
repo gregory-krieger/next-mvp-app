@@ -93,8 +93,9 @@ export default function CreateOrganization() {
                       toast.error(ctx.error.message);
                     },
                     onSuccess: async (ctx) => {
-                      if (ctx.data.organization) {
-                        router.push(`/${ctx.data.slug}/dashboard/`);
+                      console.log(ctx);
+                      if (ctx.data) {
+                        router.push(`/${ctx.data.slug}/`);
                       } else {
                         toast.error("Something went wrong");
                       }

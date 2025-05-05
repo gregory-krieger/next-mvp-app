@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react";
+import { BadgeCheck, Bell, CreditCard, LogOut, Sparkles } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -25,14 +18,17 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { User } from "better-auth";
 import { authClient } from "@/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
-type Props = {
+import { User } from "better-auth";
+
+type NavUserProps = {
   user: User;
 };
 
-export function NavUser({ user }: Props) {
+export function NavUser(props: NavUserProps) {
+  const { user } = props;
+
   const { isMobile } = useSidebar();
   const router = useRouter();
 
@@ -43,7 +39,7 @@ export function NavUser({ user }: Props) {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="cursor-pointer data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 {user.image && <AvatarImage src={user.image} alt={user.name} />}
@@ -55,7 +51,6 @@ export function NavUser({ user }: Props) {
                 <span className="truncate font-medium">{user.name}</span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent

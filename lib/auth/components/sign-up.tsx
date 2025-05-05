@@ -47,8 +47,6 @@ export default function SignUp() {
         <div className="flex flex-col gap-6">
           {/* Email */}
 
-          <div className="flex flex-col gap-4"></div>
-
           <Button
             variant="outline"
             className="w-full gap-2 cursor-pointer"

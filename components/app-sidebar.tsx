@@ -2,12 +2,9 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
   BookOpen,
   Bot,
-  Command,
   Frame,
-  GalleryVerticalEnd,
   Map,
   PieChart,
   Settings2,
@@ -17,7 +14,7 @@ import {
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
+import { OrganizationSwitcher } from "@/components/organization-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -25,32 +22,11 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { User } from "better-auth";
+import { Skeleton } from "./ui/skeleton";
+import { authClient } from "@/lib/auth/auth-client";
 
 // This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
       title: "Playground",
@@ -158,26 +134,56 @@ const data = {
 };
 
 type props = {
-  user: User;
-  sideBarProps: React.ComponentProps<typeof Sidebar>;
+  sideBarProps?: React.ComponentProps<typeof Sidebar>;
+  currentOrgSlug: string;
 };
 
 const AppSidebar = (props: props) => {
-  return (
-    <Sidebar collapsible="icon" {...props.sideBarProps}>
-      <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
-      </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={props.user} />
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
-  );
+  const { sideBarProps, currentOrgSlug } = props;
+
+  const {
+    data: session,
+    isPending, //loading state
+    error, //error object
+  } = authClient.useSession();
+
+  if (isPending) {
+    return (
+      <Sidebar collapsible="icon" {...sideBarProps}>
+        <SidebarHeader>
+          <Skeleton className="h-10 w-full" />
+        </SidebarHeader>
+      </Sidebar>
+    );
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  if (session && session.user) {
+    console.log(session);
+    return (
+      <Sidebar collapsible="icon" {...sideBarProps}>
+        <SidebarHeader>
+          <OrganizationSwitcher
+            orgs={session.organizations}
+            currentOrgSlug={currentOrgSlug}
+          />
+        </SidebarHeader>
+        <SidebarContent>
+          <NavMain items={data.navMain} />
+          <NavProjects projects={data.projects} />
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUser user={session.user} />
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+    );
+  }
+
+  return null;
 };
 
 export default AppSidebar;

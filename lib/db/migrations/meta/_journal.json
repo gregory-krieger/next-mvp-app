@@ -8,6 +8,13 @@
       "when": 1746294028084,
       "tag": "0000_heavy_king_cobra",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1746342904575,
+      "tag": "0001_mature_mandrill",
+      "breakpoints": true
     }
   ]
 }

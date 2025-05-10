@@ -5,7 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { organization } from "better-auth/plugins";
 
 import resend from "../resend/resend";
-import VerifyEmailAddress from "@/lib/react-email/emails/verify-email-address";
+import VerifyEmailAddress from "../emails/verify-email-address";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {

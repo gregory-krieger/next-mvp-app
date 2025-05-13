@@ -1,3 +1,3 @@
 // auth schema
-export * from "./schema/auth";
-export * from "./schema/auth-relations";
+export * from "@/lib/auth/schema/auth";
+export * from "@/lib/auth/schema/auth-relations";

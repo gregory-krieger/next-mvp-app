@@ -54,7 +54,7 @@ export const verification = pgTable("verification", {
 export const organization = pgTable("organization", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
-  slug: text("slug").unique(),
+  slug: text("slug").unique().notNull(),
   logo: text("logo"),
   createdAt: timestamp("created_at").notNull(),
   metadata: text("metadata"),

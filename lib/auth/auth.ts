@@ -5,7 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { customSession, openAPI, organization } from "better-auth/plugins";
 
 import resend from "../resend/resend";
-import VerifyEmailAddress from "../emails/verify-email-address";
+import VerifyEmailAddress from "../../components/emails/verify-email-address";
 import { listUserOrganizations } from "./list-user-orgs";
 
 export const auth = betterAuth({

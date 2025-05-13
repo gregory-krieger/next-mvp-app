@@ -8,10 +8,6 @@ const Page = () => {
   // const [activeOrg, setActiveOrg] = useState<string | null>(null);
   const { activeOrg } = useSession();
 
-  if (!activeOrg) {
-    return <div>No active org</div>;
-  }
-
   return (
     <div>
       <Button onClick={() => actionGetActiveOrg({ orgSlug: activeOrg.slug })}>

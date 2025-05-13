@@ -7,10 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "email": "email dev --dir lib/emails --port 3003",
+    "email": "email dev --dir components/emails --port 3003",
     "db:generate": "npx drizzle-kit generate --config=lib/db/drizzle.config.ts",
     "db:migrate": "npx drizzle-kit migrate --config=lib/db/drizzle.config.ts",
-    "better-auth:generate": "npx @better-auth/cli generate --config ./lib/auth/auth.ts --output ./lib/db/schema/auth.ts"
+    "better-auth:generate": "npx @better-auth/cli generate --config ./lib/auth/auth.ts --output ./lib/auth/schema/auth.ts"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.9",

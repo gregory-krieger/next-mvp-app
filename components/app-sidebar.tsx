@@ -22,6 +22,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { SessionWithActiveOrg } from "@/lib/auth/get-session-with-active-org";
 
 // This is sample data.
 const data = {
@@ -133,23 +134,23 @@ const data = {
 
 type props = {
   sideBarProps?: React.ComponentProps<typeof Sidebar>;
-  currentOrgSlug: string;
+  session: SessionWithActiveOrg;
 };
 
 const AppSidebar = (props: props) => {
-  const { sideBarProps, currentOrgSlug } = props;
+  const { sideBarProps, session } = props;
 
   return (
     <Sidebar collapsible="icon" {...sideBarProps}>
       <SidebarHeader>
-        <OrganizationSwitcher currentOrgSlug={currentOrgSlug} />
+        <OrganizationSwitcher session={session} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser />
+        <NavUser session={session} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

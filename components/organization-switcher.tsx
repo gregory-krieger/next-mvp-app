@@ -7,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -18,35 +17,18 @@ import {
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth/auth-client";
-import { Skeleton } from "./ui/skeleton";
-import { useEffect } from "react";
+import Link from "next/link";
+import { SessionWithActiveOrg } from "@/lib/auth/get-session-with-active-org";
+
 type props = {
-  currentOrgSlug: string;
+  session: SessionWithActiveOrg;
 };
 
 export function OrganizationSwitcher(props: props) {
-  const { currentOrgSlug } = props;
-
-  useEffect(() => {
-    authClient.organization.setActive({
-      organizationSlug: currentOrgSlug,
-    });
-  }, [currentOrgSlug]);
+  const { activeOrg, organizations } = props.session;
 
   const router = useRouter();
   const { isMobile } = useSidebar();
-
-  const { data: organizations, isPending } = authClient.useListOrganizations();
-
-  if (isPending) return <Skeleton className="w-full h-10" />;
-
-  const activeOrg = organizations?.find((org) => org.slug === currentOrgSlug);
-
-  if (!activeOrg || !organizations) {
-    console.log("no active org or no organizations");
-    return <Skeleton className="w-full h-10" />;
-  }
 
   return (
     <SidebarMenu>
@@ -85,26 +67,23 @@ export function OrganizationSwitcher(props: props) {
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Organizations
             </DropdownMenuLabel>
-            {organizations.map((org, index) => (
-              <DropdownMenuItem
-                key={org.name}
-                onClick={() => router.push(`/${org.slug}`)}
-                className="gap-2 p-2"
-              >
-                <div className="size-6 shrink-0">
-                  {org.logo ? (
-                    <Image
-                      src={org.logo}
-                      alt={org.name}
-                      width={24}
-                      height={24}
-                    />
-                  ) : (
-                    <div className="flex size-6 items-center justify-center rounded-md border bg-foreground/10" />
-                  )}
-                </div>
-                {org.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+            {organizations.map((org) => (
+              <DropdownMenuItem key={org.id} className="p-2">
+                <Link href={`/${org.slug}`} className="flex items-center gap-2">
+                  <div className="size-6 shrink-0">
+                    {org.logo ? (
+                      <Image
+                        src={org.logo}
+                        alt={org.name}
+                        width={24}
+                        height={24}
+                      />
+                    ) : (
+                      <div className="flex size-6 items-center justify-center rounded-md border bg-foreground/10" />
+                    )}
+                  </div>
+                  {org.name}
+                </Link>
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />

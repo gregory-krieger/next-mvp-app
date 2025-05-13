@@ -25,22 +25,19 @@ import {
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
-import { Skeleton } from "./ui/skeleton";
 import { useTheme } from "next-themes";
+import { SessionWithActiveOrg } from "@/lib/auth/get-session-with-active-org";
 
-export function NavUser() {
+type props = {
+  session: SessionWithActiveOrg;
+};
+
+export function NavUser(props: props) {
+  const { user } = props.session;
+
   const { isMobile } = useSidebar();
   const router = useRouter();
-
   const { theme, setTheme } = useTheme();
-
-  const { data: session, isPending } = authClient.useSession();
-
-  if (isPending) return <Skeleton className="w-full h-10" />;
-
-  if (!session || !session.user) return null;
-
-  const user = session.user;
 
   return (
     <SidebarMenu>

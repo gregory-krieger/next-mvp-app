@@ -9,6 +9,7 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
+  Table,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -19,10 +20,15 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
   SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { SessionWithActiveOrg } from "@/lib/auth/get-session-with-active-org";
+import { useRouter } from "next/navigation";
 
 // This is sample data.
 const data = {
@@ -140,12 +146,29 @@ type props = {
 const AppSidebar = (props: props) => {
   const { sideBarProps, session } = props;
 
+  const router = useRouter();
+
+  const orgSlug = session.activeOrg.slug;
+
   return (
     <Sidebar collapsible="icon" {...sideBarProps}>
       <SidebarHeader>
         <OrganizationSwitcher session={session} />
       </SidebarHeader>
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                tooltip={"Data table"}
+                onClick={() => router.push(`/${orgSlug}/table`)}
+              >
+                <Table />
+                <span>Data table</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
       </SidebarContent>

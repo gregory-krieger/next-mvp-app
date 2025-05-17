@@ -10,6 +10,7 @@ import {
   Settings2,
   SquareTerminal,
   Table,
+  User,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -28,7 +29,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { SessionWithActiveOrg } from "@/lib/auth/get-session-with-active-org";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 // This is sample data.
 const data = {
@@ -146,12 +147,10 @@ type props = {
 const AppSidebar = (props: props) => {
   const { sideBarProps, session } = props;
 
-  const router = useRouter();
-
   const orgSlug = session.activeOrg.slug;
 
   return (
-    <Sidebar collapsible="icon" {...sideBarProps}>
+    <Sidebar {...sideBarProps}>
       <SidebarHeader>
         <OrganizationSwitcher session={session} />
       </SidebarHeader>
@@ -159,12 +158,19 @@ const AppSidebar = (props: props) => {
         <SidebarGroup>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton
-                tooltip={"Data table"}
-                onClick={() => router.push(`/${orgSlug}/table`)}
-              >
-                <Table />
-                <span>Data table</span>
+              <SidebarMenuButton tooltip={"Data table"} asChild>
+                <Link href={`/${orgSlug}/profile`}>
+                  <User />
+                  <span>Profile</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton tooltip={"Data table"} asChild>
+                <Link href={`/${orgSlug}/table`}>
+                  <Table />
+                  <span>Data table</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

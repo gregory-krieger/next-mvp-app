@@ -159,20 +159,13 @@ const AppSidebar = (props: props) => {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton tooltip={"Data table"} asChild>
-                <Link href={`/${orgSlug}/profile-2`}>
-                  <User />
-                  <span>Profile 2</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton tooltip={"Data table"} asChild>
                 <Link href={`/${orgSlug}/profile`}>
                   <User />
                   <span>Profile</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
+
             <SidebarMenuItem>
               <SidebarMenuButton tooltip={"Data table"} asChild>
                 <Link href={`/${orgSlug}/table`}>

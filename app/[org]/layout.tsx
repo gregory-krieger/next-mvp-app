@@ -20,7 +20,7 @@ const OrganizationLayout = async (props: Props) => {
   return (
     <SessionClientProvider session={session}>
       <SidebarProvider>
-        <div className="min-h-screen w-full flex flex-row py-2 px-1 pr-2  bg-gradient-to-b from-violet-100 to-blue-200">
+        <div className="min-h-screen w-full flex flex-row py-2 px-1 pr-2 bg-gradient-to-b from-sky-100 to-sky-200 dark:from-background dark:to-background dark:bg-background">
           <AppSidebar
             session={session}
             sideBarProps={{
